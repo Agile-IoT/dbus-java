@@ -59,7 +59,7 @@ clean:
 	rm -f *.1 *.o *.so *.h .dist .classes .testclasses .doc *.jar *.log pid address tmp-session-bus *.gz .viewerclasses .bin .testbin .win .binclasses Manifest
 	rm -rf dbus-java-$(VERSION)
 	rm -rf dbus-java-$(RELEASEVERSION)
-	
+
 classes: .classes
 testclasses: .testclasses
 viewerclasses: .viewerclasses
@@ -105,7 +105,7 @@ dbus-bin.jar: dbus-java-bin-$(VERSION).jar
 	ln -sf $< $@
 dbus-viewer.jar: dbus-java-viewer-$(VERSION).jar
 	ln -sf $< $@
-	
+
 jar: libdbus-java-$(VERSION).jar
 
 .doc:
@@ -139,7 +139,7 @@ doc/api/index.html: $(SRCDIR)/*.java $(SRCDIR)/dbus/*.java .doc
 
 %.1: %.sgml
 	$(DOCBOOKTOMAN) $< > $@
-	
+
 bin/%: %.sh .bin
 	sed 's,\%JARPATH\%,$(JARPREFIX),;s,\%JAVAUNIXJARPATH\%,$(JAVAUNIXJARDIR),;s,\%JAVAUNIXLIBPATH\%,$(JAVAUNIXLIBDIR),;s,\%VERSION\%,$(VERSION),;s,\%DEBUG\%,$(DEBUG),;s,\%JAVA\%,$(JAVA),' < $< > $@
 
@@ -311,7 +311,7 @@ dbus-java-$(VERSION).tar.gz: .dist
 	tar zcf $@ dbus-java-$(VERSION)
 dbus-java-$(VERSION).zip: .dist
 	zip -r $@ dbus-java-$(VERSION)/
-	
+
 dbus-java-$(RELEASEVERSION).tar.gz: $(DISTFILES) 
 	mkdir -p dbus-java-$(RELEASEVERSION)/
 	cp -fa $^ dbus-java-$(RELEASEVERSION)/
