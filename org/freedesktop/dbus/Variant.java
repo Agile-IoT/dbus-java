@@ -15,6 +15,7 @@ import static org.freedesktop.dbus.Gettext._;
 import java.lang.reflect.Type;
 import java.text.MessageFormat;
 import java.util.Vector;
+
 import org.freedesktop.dbus.exceptions.DBusException;
 
 import cx.ath.matthew.debug.Debug;
@@ -33,7 +34,7 @@ public class Variant<T>
    /** 
     * Create a Variant from a basic type object.
     * @param o The wrapped value.
-    * @throws IllegalArugmentException If you try and wrap Null or an object of a non-basic type.
+    * @throws IllegalArgumentException If you try and wrap Null or an object of a non-basic type.
     */
    public Variant(T o) throws IllegalArgumentException
    {
@@ -54,7 +55,7 @@ public class Variant<T>
     * Create a Variant.
     * @param o The wrapped value.
     * @param type The explicit type of the value.
-    * @throws IllegalArugmentException If you try and wrap Null or an object which cannot be sent over DBus.
+    * @throws IllegalArgumentException If you try and wrap Null or an object which cannot be sent over DBus.
     */
    public Variant(T o, Type type) throws IllegalArgumentException
    {
@@ -75,7 +76,7 @@ public class Variant<T>
     * Create a Variant.
     * @param o The wrapped value.
     * @param sig The explicit type of the value, as a dbus type string.
-    * @throws IllegalArugmentException If you try and wrap Null or an object which cannot be sent over DBus.
+    * @throws IllegalArgumentException If you try and wrap Null or an object which cannot be sent over DBus.
     */
    public Variant(T o, String sig) throws IllegalArgumentException
    {
