@@ -465,7 +465,27 @@ public class Message
       }
       return sb.toString();
    }
-   /**
+    /**
+     * Returns the count how much to advance the signature.
+     * @param sigb A buffer of the D-Bus signature.
+     * @param sigofs The offset into the signature corresponding to this value.
+     * @return The offset into the signature of the end of this value's type.
+     */
+    private int skipone(byte[] sigb, int sigofs)
+    {
+	if(sigb[sigofs] == ArgumentType.STRUCT1) {
+	    for(int bracketcount = 0; ; sigofs++) {
+		if(sigb[sigofs] == ArgumentType.STRUCT1)
+		    bracketcount++;
+		else if(sigb[sigofs] == ArgumentType.STRUCT2) {
+		    if(--bracketcount == 0)
+			break;
+		}
+	    }
+	}
+	return sigofs;       
+    }
+    /**
     * Returns the value of the header field of a given field.
     * @param type The field to return.
     * @return The value of the field or null if unset.
@@ -627,15 +647,9 @@ public class Message
                   ensureBuffers(contents.length*4);
                   for (Object o: contents) 
                      diff = appendone(sigb, i, o);
-                  if (i == diff) {
-                     // advance the type parser even on 0-size arrays.
-                     Vector<Type> temp = new Vector<Type>();
-                     byte[] temp2 = new byte[sigb.length-diff];
-                     System.arraycopy(sigb, diff, temp2, 0, temp2.length);
-                     String temp3 = new String(temp2);
-                     int temp4 = Marshalling.getJavaType(temp3, temp, 1);
-                     diff += temp4 - 1;
-                  }
+		  if (i == diff)
+		      // advance the type parser even on 0-size arrays. special handling for struct members
+		      diff = skipone(sigb, i);
                   i = diff;
                } else if (data instanceof Map) {
                   int diff = i;
@@ -919,15 +933,20 @@ public class Message
                   break;
                case ArgumentType.DICT_ENTRY1:
                   if (0 == size) {
-                     // advance the type parser even on 0-size arrays.
-                     Vector<Type> temp = new Vector<Type>();
-                     byte[] temp2 = new byte[sigb.length-ofs[0]];
-                     System.arraycopy(sigb, ofs[0], temp2, 0, temp2.length);
-                     String temp3 = new String(temp2);
-                     // ofs[0] gets incremented anyway. Leave one character on the stack
-                     int temp4 = Marshalling.getJavaType(temp3, temp, 1) - 1;
-                     ofs[0] += temp4;
-                     if (Debug.debug) Debug.print(Debug.VERBOSE, "Aligned type: "+temp3+" "+temp4+" "+ofs[0]);
+		      // advance the type parser even on 0-size arrays.
+		      int structend = skipone(sigb, ofs[0]);
+		      if(structend == ofs[0]) {
+			  Vector<Type> temp = new Vector<Type>();
+			  byte[] temp2 = new byte[sigb.length-ofs[0]];
+			  System.arraycopy(sigb, ofs[0], temp2, 0, temp2.length);
+			  String temp3 = new String(temp2);
+			  // ofs[0] gets incremented anyway. Leave one character on the stack
+			  int temp4 = Marshalling.getJavaType(temp3, temp, 1) - 1;
+			  ofs[0] += temp4;
+			  if (Debug.debug) Debug.print(Debug.VERBOSE, "Aligned type: "+temp3+" "+temp4+" "+ofs[0]);
+		      }
+		      else
+			  ofs[0] = structend;
                   }
                   int ofssave = ofs[0];
                   long end = ofs[1]+size;
