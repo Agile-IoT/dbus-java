@@ -1,0 +1,13 @@
+*.1
+*~
+*.jar
+
+.bin
+.binclasses
+.classes
+.doc
+.viewerclasses
+Manifest
+/bin
+/classes
+/doc
