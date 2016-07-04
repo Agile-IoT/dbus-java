@@ -271,7 +271,7 @@ public class Marshalling
                   Vector<Type> contained = new Vector<Type>();
                   int c = getJavaType(dbus.substring(i+1, j-1), contained, -1);
                   rv.add(new DBusStructType(contained.toArray(new Type[0])));
-                  i = j;
+                  i = j - 1;
                   break;                     
                case Message.ArgumentType.ARRAY:
                   if (Message.ArgumentType.DICT_ENTRY1 == dbus.charAt(i+1)) {
