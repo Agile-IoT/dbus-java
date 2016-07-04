@@ -1,3 +1,8 @@
+Version 2.9:
+
+	* Fix array (de)serialization
+	* Fix doc compilation errors <jean -dot- parpaillon -at- free -dot- fr>)
+
 Version 2.8:
 
    * Patch manpage source to build with docbook2x (Patch from Alexander Kurtakov 
