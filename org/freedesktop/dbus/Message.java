@@ -627,6 +627,15 @@ public class Message
                   ensureBuffers(contents.length*4);
                   for (Object o: contents) 
                      diff = appendone(sigb, i, o);
+                  if (i == diff) {
+                     // advance the type parser even on 0-size arrays.
+                     Vector<Type> temp = new Vector<Type>();
+                     byte[] temp2 = new byte[sigb.length-diff];
+                     System.arraycopy(sigb, diff, temp2, 0, temp2.length);
+                     String temp3 = new String(temp2);
+                     int temp4 = Marshalling.getJavaType(temp3, temp, 1);
+                     diff += temp4 - 1;
+                  }
                   i = diff;
                } else if (data instanceof Map) {
                   int diff = i;
@@ -651,7 +660,7 @@ public class Message
                      diff = appendone(sigb, i, o);
                   i = diff;
                }
-               if (Debug.debug) Debug.print(Debug.VERBOSE, "start: "+c+" end: "+bytecounter+" length: "+(bytecounter-c));
+	       if (Debug.debug) Debug.print(Debug.VERBOSE, "start: "+c+" end: "+bytecounter+" length: "+(bytecounter-c));
                marshallint(bytecounter-c, alen, 0, 4);
                break;
             case ArgumentType.STRUCT1:
@@ -664,8 +673,9 @@ public class Message
                   contents = (Object[]) data;
                ensureBuffers(contents.length*4);
                int j = 0;
-               for (i++; sigb[i] != ArgumentType.STRUCT2; i++)
+               for (i++; sigb[i] != ArgumentType.STRUCT2; i++) {
                   i = appendone(sigb, i, contents[j++]);
+					}
                break;
             case ArgumentType.DICT_ENTRY1:
                // Dict entries are the same as structs.
@@ -772,9 +782,9 @@ public class Message
       if (Debug.debug) Debug.print(Debug.DEBUG, "Appending sig: "+sig+" data: "+Arrays.deepToString(data));
       byte[] sigb = sig.getBytes();
       int j = 0;
-      for (int i = 0; i < sigb.length; i++) {
+      for (int i = 0; i < sigb.length && j < data.length; i++, j++) {
          if (Debug.debug) Debug.print(Debug.VERBOSE, "Appending item: "+i+" "+((char)sigb[i])+" "+j);
-         i = appendone(sigb, i, data[j++]);
+         i = appendone(sigb, i, data[j]);
       }
    }
    /**
