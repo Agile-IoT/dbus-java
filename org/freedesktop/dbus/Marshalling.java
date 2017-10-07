@@ -50,6 +50,7 @@ public class Marshalling
     */
    public static String getDBusType(Type[] c) throws DBusException
    {
+      if (Debug.debug) Debug.print(Debug.VERBOSE, "getDbusType1[]: "+c);
       StringBuffer sb = new StringBuffer();
       for (Type t: c) 
          for (String s: getDBusType(t))
@@ -67,6 +68,7 @@ public class Marshalling
    public static String[] getDBusType(Type c) throws DBusException
    {
       String[] cached = typeCache.get(c);
+      if (Debug.debug) Debug.print(Debug.VERBOSE, "getDbusType1: "+c+" , cached: "+cached);
       if (null != cached) return cached;
       cached = getDBusType(c, false);
       typeCache.put(c, cached);
@@ -83,6 +85,7 @@ public class Marshalling
     */
    public static synchronized String[] getDBusType(Type c, boolean basic) throws DBusException
    {
+      if (Debug.debug) Debug.print(Debug.VERBOSE, "getDbusType2: "+c+" , "+basic);
       return recursiveGetDBusType(c, basic, 0);
    }
    private static StringBuffer[] out = new StringBuffer[10];
@@ -241,7 +244,7 @@ public class Marshalling
          throw new DBusException(_("Exporting non-exportable type ")+c);
       }
 
-      if (Debug.debug) Debug.print(Debug.VERBOSE, "Converted Java type: "+c+" to D-Bus Type: "+out[level]);
+      if (Debug.debug) Debug.print(Debug.VERBOSE, "Sync Converted Java type: "+c+" to D-Bus Type: "+out[level]);
 
       return new String[] { out[level].toString() };
    }
