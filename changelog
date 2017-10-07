@@ -1,3 +1,7 @@
+Version 2.10:
+
+	* Fix concurrency issue causing signature errors while marshalling
+
 Version 2.9:
 
 	* Fix array (de)serialization
