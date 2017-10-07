@@ -81,7 +81,7 @@ public class Marshalling
     * @return The DBus type.
     * @throws DBusException If the given type cannot be converted to a DBus type.
     */
-   public static String[] getDBusType(Type c, boolean basic) throws DBusException
+   public static synchronized String[] getDBusType(Type c, boolean basic) throws DBusException
    {
       return recursiveGetDBusType(c, basic, 0);
    }
